@@ -2,41 +2,60 @@ class SharedResource {
     int item;
     boolean available = false;
 
-    // TODO: synchronize void put(int item)
-    // while(available) -> wait()
-    // set this.item = item, available = true
-    // print "Produced: " + item
-    // notify()
+    synchronized void put(int item) {
+        try {
+            while (available) wait();
+            this.item = item;
+            available = true;
+            System.out.println("Produced: " + item);
+            notify();
+        } catch (Exception e) { }
+    }
 
-    // TODO: synchronize void get()
-    // while(!available) -> wait()
-    // print "Consumed: " + item
-    // available = false
-    // notify()
+    synchronized void get() {
+        try {
+            while (!available) wait();
+            System.out.println("Consumed: " + item);
+            available = false;
+            notify();
+        } catch (Exception e) { }
+    }
 }
 
 class Producer extends Thread {
-    SharedResource resource;
-    // TODO: Constructor to init resource
-    
-    // TODO: run()
-    // Loop 1 to 5
-    // call resource.put(i)
+    SharedResource r;
+
+    Producer(SharedResource r) {
+        this.r = r;
+    }
+
+    public void run() {
+        for (int i = 1; i < 6; i++) {
+            r.put(i);
+        }
+    }
 }
 
 class Consumer extends Thread {
-    SharedResource resource;
-    // TODO: Constructor to init resource
-    
-    // TODO: run()
-    // Loop 1 to 5
-    // call resource.get()
+    SharedResource r;
+
+    Consumer(SharedResource r) {
+        this.r = r;
+    }
+
+    public void run() {
+        for (int i = 1; i < 6; i++) {
+            r.get();
+        }
+    }
 }
 
 public class ProducerConsumer {
     public static void main(String[] args) {
-        // TODO: Create SharedResource object
-        // TODO: Create Producer and Consumer threads
-        // TODO: Start both threads
+        SharedResource r = new SharedResource();
+        Producer p = new Producer(r);
+        Consumer c = new Consumer(r);
+        p.start();
+        c.start();
     }
 }
