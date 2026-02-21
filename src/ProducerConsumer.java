@@ -30,9 +30,8 @@ class Producer extends Thread {
     }
 
     public void run() {
-        int[] values = {1, 2, 3, 5, 5};   // intentionally skipping 4
-        for (int i = 0; i < values.length; i++) {
-            r.put(values[i]);
+        for (int i = 1; i < 6; i++) {
+            r.put(i);
         }
     }
 }
@@ -45,7 +44,7 @@ class Consumer extends Thread {
     }
 
     public void run() {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 1; i < 6; i++) {
             r.get();
         }
     }
